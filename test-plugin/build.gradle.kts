@@ -23,16 +23,17 @@ specialGradle {
 // spigot and mappings
 dependencies {
   val spigotVer = "1.17-R0.1-SNAPSHOT"
-  // add mojang mapped spigot to compileOnly
+  // compile against mojang mapped spigot jar
   compileOnly(group = "org.spigotmc", name = "spigot", version = spigotVer, classifier = "remapped-mojang")
-  // add mappings txt installed to maven local by build tools to reobfMappings
-  reobfMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "txt", classifier = "maps-mojang")
+  // add mappings installed to maven local by build tools
+  mojangToObfMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "txt", classifier = "maps-mojang")
+  obfToRuntimeMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "csrg", classifier = "maps-spigot")
 }
 
-// set reobfJar to run on build
+// set productionMappedJar to run on build
 tasks {
   build {
-    dependsOn(reobfJar)
+    dependsOn(productionMappedJar)
   }
 }
 

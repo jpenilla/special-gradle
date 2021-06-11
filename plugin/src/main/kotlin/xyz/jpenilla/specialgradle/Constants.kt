@@ -18,7 +18,11 @@ package xyz.jpenilla.specialgradle
 
 public object Constants {
   public const val SPECIAL_SOURCE_CONFIGURATION_NAME: String = "specialSource"
-  public const val REOBF_MAPPINGS_CONFIGURATION_NAME: String = "reobfMappings"
+  public const val MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME: String = "mojangToObfMappings"
+  public const val OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME: String = "obfToRuntimeMappings"
+
   public const val SPECIAL_GRADLE_EXTENSION_NAME: String = "specialGradle"
-  public const val REOBF_JAR_TASK_NAME: String = "reobfJar"
+
+  public const val OBF_JAR_TASK_NAME: String = "obfJar"
+  public const val PRODUCTION_MAPPED_JAR_TASK_NAME: String = "productionMappedJar"
 }

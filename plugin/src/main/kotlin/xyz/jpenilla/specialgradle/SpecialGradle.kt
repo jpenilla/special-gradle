@@ -24,7 +24,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.repositories
-import xyz.jpenilla.specialgradle.task.ReObfJar
+import xyz.jpenilla.specialgradle.task.RemapJar
 
 public abstract class SpecialGradle : Plugin<Project> {
   override fun apply(target: Project) {
@@ -32,18 +32,30 @@ public abstract class SpecialGradle : Plugin<Project> {
     target.configurations.register(Constants.SPECIAL_SOURCE_CONFIGURATION_NAME) {
       this.isTransitive = false
     }
-    target.configurations.register(Constants.REOBF_MAPPINGS_CONFIGURATION_NAME)
+    target.configurations.register(Constants.MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME)
+    target.configurations.register(Constants.OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME)
 
-    val reobf = target.tasks.register<ReObfJar>(Constants.REOBF_JAR_TASK_NAME) {
+    val obf = target.tasks.register<RemapJar>(Constants.OBF_JAR_TASK_NAME) {
+      this.reverse.set(true)
+      this.archiveClassifier.set("obf")
+      this.mappingsFile.set(this.project.layout.file(this.project.configurations.named(Constants.MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME).map {
+        it.singleFile
+      }))
+    }
+    target.tasks.register<RemapJar>(Constants.PRODUCTION_MAPPED_JAR_TASK_NAME) {
+      this.inputJar.set(obf.flatMap { it.archiveFile })
       this.archiveClassifier.set(null as String?)
+      this.mappingsFile.set(this.project.layout.file(this.project.configurations.named(Constants.OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME).map {
+        it.singleFile
+      }))
     }
 
     target.afterEvaluate {
       this.tasks.named<AbstractArchiveTask>("jar") {
         this.archiveClassifier.set("dev")
       }
-      if (!reobf.get().inputJar.isPresent) {
-        reobf.configure {
+      if (!obf.get().inputJar.isPresent) {
+        obf.configure {
           val shadowJar = tasks.findByName("shadowJar") as AbstractArchiveTask?
           if (shadowJar != null) {
             this.inputJar.set(shadowJar.archiveFile)

@@ -17,36 +17,46 @@
 package xyz.jpenilla.specialgradle.task
 
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.property
 import xyz.jpenilla.specialgradle.Constants
 
-public abstract class ReObfJar : Jar() {
+public abstract class RemapJar : Jar() {
   @get:InputFile
   public abstract val inputJar: RegularFileProperty
 
+  @get:InputFile
+  public abstract val mappingsFile: RegularFileProperty
+
+  @get:Input
+  public val reverse: Property<Boolean> = this.project.objects.property<Boolean>().convention(false)
+
   @TaskAction
   override fun copy() {
-    val mappingsFile = this.project.configurations.named(Constants.REOBF_MAPPINGS_CONFIGURATION_NAME).get().asFileTree
-      .singleOrNull() ?: error("Resolved too many files in the mappings configuration!")
     val specialSourceConfig = this.project.configurations.named(Constants.SPECIAL_SOURCE_CONFIGURATION_NAME).get()
     val specialSourceJar = specialSourceConfig.asFileTree.singleOrNull() ?: error("Resolved too many files in the SpecialSource configuration!")
-    val dir = this@ReObfJar.project.layout.buildDirectory.dir("special-gradle").get()
+    val dir = this@RemapJar.project.layout.buildDirectory.dir("tmp/special-gradle").get()
     dir.asFile.mkdirs()
-    val dest = dir.file("reobf.jar").asFile
-    dest.delete()
+    val inputJar = this@RemapJar.inputJar.get().asFile
+    val mappingsFile = this@RemapJar.mappingsFile.get().asFile
+    val dest = dir.file("${inputJar.nameWithoutExtension}-mapped-${mappingsFile.nameWithoutExtension}.jar").asFile
     this.project.javaexec {
       this.classpath(specialSourceJar)
       this.args(
         "-i",
-        this@ReObfJar.inputJar.get().asFile.absolutePath,
+        inputJar.absolutePath,
         "-o",
         dest.absolutePath,
         "-m",
-        mappingsFile.absolutePath,
-        "--reverse"
+        mappingsFile.absolutePath
       )
+      if (this@RemapJar.reverse.get()) {
+        this.args("--reverse")
+      }
     }
     this.from(this.project.zipTree(dest))
     super.copy()
