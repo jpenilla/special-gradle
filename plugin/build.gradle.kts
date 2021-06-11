@@ -46,7 +46,7 @@ indra {
 }
 
 license {
-  header(file("LICENSE_HEADER"))
+  header(file("../LICENSE_HEADER"))
 }
 
 indraPluginPublishing {

@@ -1,7 +1,4 @@
-enableFeaturePreview("VERSION_CATALOGS")
+includeBuild("plugin")
+includeBuild("test-plugin")
 
-plugins {
-  id("ca.stellardrift.polyglot-version-catalogs") version "5.0.0"
-}
-
-rootProject.name = "special-gradle"
+rootProject.name = "special-gradle-parent"
