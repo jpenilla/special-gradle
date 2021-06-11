@@ -1,0 +1,16 @@
+metadata:
+  format: { version: 1.0 }
+  polyglot-extensions:
+    - plugins
+
+plugins:
+  net.kyori.indra: &indra 2.0.5
+  net.kyori.indra.license-header: *indra
+  net.kyori.indra.publishing.gradle-plugin: *indra
+  com.gradle.plugin-publish: 0.15.0
+
+versions: [ ]
+
+dependencies: [ ]
+
+bundles: [ ]
