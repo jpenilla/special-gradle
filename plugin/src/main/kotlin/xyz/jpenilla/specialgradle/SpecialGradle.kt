@@ -34,6 +34,8 @@ public abstract class SpecialGradle : Plugin<Project> {
     }
     target.configurations.register(Constants.MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME)
     target.configurations.register(Constants.OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME)
+    target.configurations.register(Constants.REMAPPED_DEPENDENCIES_MOJANG_CONFIGURATION_NAME)
+    target.configurations.register(Constants.REMAPPED_DEPENDENCIES_OBF_CONFIGURATION_NAME)
 
     val obf = target.tasks.register<RemapJar>(Constants.OBF_JAR_TASK_NAME) {
       this.reverse.set(true)
@@ -41,11 +43,17 @@ public abstract class SpecialGradle : Plugin<Project> {
       this.mappingsFile.set(this.project.layout.file(this.project.configurations.named(Constants.MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME).map {
         it.singleFile
       }))
+      this.remapDependency.set(this.project.layout.file(this.project.configurations.named(Constants.REMAPPED_DEPENDENCIES_MOJANG_CONFIGURATION_NAME).map {
+        it.singleFile
+      }))
     }
     target.tasks.register<RemapJar>(Constants.PRODUCTION_MAPPED_JAR_TASK_NAME) {
       this.inputJar.set(obf.flatMap { it.archiveFile })
       this.archiveClassifier.set(null as String?)
       this.mappingsFile.set(this.project.layout.file(this.project.configurations.named(Constants.OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME).map {
+        it.singleFile
+      }))
+      this.remapDependency.set(this.project.layout.file(this.project.configurations.named(Constants.REMAPPED_DEPENDENCIES_OBF_CONFIGURATION_NAME).map {
         it.singleFile
       }))
     }

@@ -20,6 +20,8 @@ public object Constants {
   public const val SPECIAL_SOURCE_CONFIGURATION_NAME: String = "specialSource"
   public const val MOJANG_TO_OBF_MAPPINGS_CONFIGURATION_NAME: String = "mojangToObfMappings"
   public const val OBF_TO_RUNTIME_MAPPINGS_CONFIGURATION_NAME: String = "obfToRuntimeMappings"
+  public const val REMAPPED_DEPENDENCIES_MOJANG_CONFIGURATION_NAME: String = "remappedMojang"
+  public const val REMAPPED_DEPENDENCIES_OBF_CONFIGURATION_NAME: String = "remappedObf"
 
   public const val SPECIAL_GRADLE_EXTENSION_NAME: String = "specialGradle"
 

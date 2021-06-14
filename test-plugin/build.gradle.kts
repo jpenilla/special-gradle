@@ -27,7 +27,9 @@ dependencies {
   compileOnly(group = "org.spigotmc", name = "spigot", version = spigotVer, classifier = "remapped-mojang")
   // add mappings installed to maven local by build tools
   mojangToObfMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "txt", classifier = "maps-mojang")
+  remappedMojang(group = "org.spigotmc", name = "spigot", version = spigotVer, classifier = "remapped-mojang")
   obfToRuntimeMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "csrg", classifier = "maps-spigot")
+  remappedObf(group = "org.spigotmc", name = "spigot", version = spigotVer, classifier = "remapped-obf")
 }
 
 // set productionMappedJar to run on build

@@ -32,6 +32,9 @@ public abstract class RemapJar : Jar() {
   @get:InputFile
   public abstract val mappingsFile: RegularFileProperty
 
+  @get:InputFile
+  public abstract val remapDependency: RegularFileProperty
+
   @get:Input
   public val reverse: Property<Boolean> = this.project.objects.property<Boolean>().convention(false)
 
@@ -43,16 +46,20 @@ public abstract class RemapJar : Jar() {
     dir.asFile.mkdirs()
     val inputJar = this@RemapJar.inputJar.get().asFile
     val mappingsFile = this@RemapJar.mappingsFile.get().asFile
+    val dependency = this@RemapJar.remapDependency.get().asFile
     val dest = dir.file("${inputJar.nameWithoutExtension}-mapped-${mappingsFile.nameWithoutExtension}.jar").asFile
     this.project.javaexec {
-      this.classpath(specialSourceJar)
+      this.main = "net.md_5.specialsource.SpecialSource"
+      this.classpath(specialSourceJar, dependency)
       this.args(
         "-i",
         inputJar.absolutePath,
         "-o",
         dest.absolutePath,
         "-m",
-        mappingsFile.absolutePath
+        mappingsFile.absolutePath,
+        "--live",
+        "--quiet"
       )
       if (this@RemapJar.reverse.get()) {
         this.args("--reverse")
