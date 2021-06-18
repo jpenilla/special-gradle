@@ -96,8 +96,8 @@ public abstract class SpecialGradle : Plugin<Project> {
     }
 
     target.afterEvaluate {
-      target.configurations.named(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME) {
-        extendsFrom(mojangMappedConfig.get())
+      target.configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME) {
+        this.extendsFrom(mojangMappedConfig.get())
       }
 
       this.tasks.named<AbstractArchiveTask>("jar") {
@@ -134,7 +134,7 @@ public abstract class SpecialGradle : Plugin<Project> {
 
         // Add dependency on Mojang-mapped Spigot
         if (specialGradleExtension.injectSpigotDependency.get()) {
-          Constants.MOJANG_MAPPED_SERVER_CONFIG(files(buildTools.flatMap { it.mojangMappedServer }))
+          Constants.MOJANG_MAPPED_SERVER_CONFIG(this@afterEvaluate.files(buildTools.flatMap { it.mojangMappedServer }))
         }
       }
     }
