@@ -15,6 +15,10 @@ repositories {
   gradlePluginPortal()
 }
 
+dependencies {
+  implementation(libs.bundles.jackson)
+}
+
 kotlin {
   explicitApi()
 }

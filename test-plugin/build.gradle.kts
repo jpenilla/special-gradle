@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import xyz.jpenilla.specialgradle.task.RemapJar
 
 plugins {
   // special gradle
@@ -16,24 +17,24 @@ group = "xyz.jpenilla"
 version = "1.0.0-SNAPSHOT"
 
 specialGradle {
-  // set special source version
+  // set Minecraft version for running BuildTools and injecting Spigot dependency
+  minecraftVersion.set("1.17")
+  // set SpecialSource version
   specialSourceVersion.set("1.10.0")
 }
 
-// spigot and mappings
-dependencies {
-  val spigotVer = "1.17-R0.1-SNAPSHOT"
-  // compile against mojang mapped spigot jar
-  compileOnly(group = "org.spigotmc", name = "spigot", version = spigotVer, classifier = "remapped-mojang")
-  // add mappings installed to maven local by build tools
-  mojangToObfMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "txt", classifier = "maps-mojang")
-  obfToRuntimeMappings(group = "org.spigotmc", name = "minecraft-server", version = spigotVer, ext = "csrg", classifier = "maps-spigot")
-}
-
-// set productionMappedJar to run on build
 tasks {
+  // set productionMappedJar to run on build
   build {
     dependsOn(productionMappedJar)
+  }
+
+  // optionally silence log output from BuildTools and SpecialSource
+  buildTools {
+    quiet.set(true)
+  }
+  withType<RemapJar> {
+    quiet.set(true)
   }
 }
 
@@ -57,8 +58,14 @@ bukkit {
   apiVersion = "1.17"
 }
 
+// configure run-paper
+runPaper {
+  disablePluginJarDetection()
+}
+
 tasks {
   runServer {
     minecraftVersion("1.17")
+    pluginJars.from(productionMappedJar)
   }
 }

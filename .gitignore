@@ -5,3 +5,6 @@
 build
 
 /.idea/
+
+# Test server directory
+/test-plugin/run/

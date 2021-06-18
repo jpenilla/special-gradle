@@ -9,10 +9,17 @@ plugins:
   net.kyori.indra.publishing.gradle-plugin: *indra
   com.gradle.plugin-publish: 0.15.0
   net.minecrell.plugin-yml.bukkit: 0.4.0
-  xyz.jpenilla.run-paper: 1.0.2
+  xyz.jpenilla.run-paper: 1.0.3
 
-versions: [ ]
+versions:
+  jackson: 2.12.3
 
-dependencies: [ ]
+dependencies:
+  jacksonModuleKotlin:
+    group: com.fasterxml.jackson.module
+    name: jackson-module-kotlin
+    version: { ref: jackson }
 
-bundles: [ ]
+bundles:
+  jackson:
+    - jacksonModuleKotlin
