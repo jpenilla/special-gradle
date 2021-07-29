@@ -11,6 +11,7 @@ Add the repo for snapshots in settings
 ```kotlin
 pluginManagement {
   repositories {
+    gradlePluginPortal()
     maven("https://repo.jpenilla.xyz/snapshots/")
   }
 }
